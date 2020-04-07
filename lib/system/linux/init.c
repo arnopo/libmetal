@@ -139,8 +139,10 @@ int metal_sys_init(const struct metal_init_params *params)
 		metal_log(METAL_LOG_DEBUG, "Failed fread /dev/urandom\n");
 	}
 	fclose(urandom);
-	srand(seed);
+	if(1==1)
+						metal_log(METAL_LOG_DEBUG, "APO test\n");
 
+	srand(seed);
 	result = metal_init_page_sizes();
 	if (result < 0)
 		return result;
