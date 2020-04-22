@@ -1,5 +1,7 @@
 collector_create (PROJECT_LIB_TESTS "${CMAKE_CURRENT_SOURCE_DIR}")
 
+message( "APO:" ${CMAKE_CURRENT_SOURCE_DIR} )
+
 add_subdirectory (system)
 
 collect (PROJECT_LIB_HEADERS metal-test.h)
@@ -19,6 +21,7 @@ collector_list (_srcs PROJECT_LIB_TESTS)
 
 if (WITH_ZEPHYR)
   set (_tfiles "")
+  message( WARNING "APO ${_srcs}" )
   foreach (f ${_srcs})
     list(APPEND _tfiles "${CMAKE_CURRENT_SOURCE_DIR}/${f}")
   endforeach(f)
@@ -30,7 +33,7 @@ if (WITH_ZEPHYR)
   endforeach(d)
   add_dependencies(app metal)
   list (APPEND _deps -lmetal)
-  target_link_libraries(app LINK_INTERFACE_LIBRARIES "${_eldflags}" ${_deps})
+  target_link_libraries(app INTERFACE "${_eldflags}" ${_deps})
   target_compile_options (app PRIVATE -DNOT_HAVE_STRERROR)
 else (WITH_ZEPHYR)
   if(WITH_SHARED_LIB)
