@@ -1,0 +1,7 @@
+# action.yml
+name: 'Platforms Build'
+description: 'Compile for a specified platform'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
