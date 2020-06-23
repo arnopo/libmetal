@@ -15,6 +15,20 @@ on:
       - scripts/**
 
 jobs:
+  platform_builds:
+    name: check builds on different platforms
+    runs-on: ubuntu-latest
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+    - uses: actions/checkout@v1
+    - name: check
+      run: |
+        git show HEAD
+    - name: build action step
+      uses: ./ # Uses an action in the root directory
+      id: build_ci
+
   nr_tests:
     name: nonreg tests
     runs-on: ubuntu-latest
