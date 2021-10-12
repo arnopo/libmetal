@@ -5,16 +5,9 @@
  */
 
 /*
- * @file	assert.h
+ * @file	assert.c
  * @brief	Zephyr assertion support.
  */
-
-#ifndef __METAL_ASSERT__H__
-#error "Include metal/assert.h instead of metal/zephyr/assert.h"
-#endif
-
-#ifndef __METAL_ZEPHYR_ASSERT__H__
-#define __METAL_ZEPHYR_ASSERT__H__
 
 #include <zephyr.h>
 
@@ -22,7 +15,7 @@
  * @brief Assertion macro for Zephyr-based applications.
  * @param cond Condition to evaluate.
  */
-#define metal_sys_assert(cond) __ASSERT_NO_MSG(cond)
-
-#endif /* __METAL_ZEPHYR_ASSERT__H__ */
-
+void metal_assert(int cond)
+{
+	__ASSERT_NO_MSG(cond);
+}
