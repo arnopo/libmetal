@@ -27,16 +27,14 @@ extern "C" {
  * @param[in]  size        size in byte of requested memory
  * @return     memory pointer, or 0 if it failed to allocate
  */
-static inline void *metal_allocate_memory(unsigned int size);
+void *metal_allocate_memory(unsigned int size);
 
 /**
  * @brief      free the memory previously allocated
  *
  * @param[in]  ptr       pointer to memory
  */
-static inline void metal_free_memory(void *ptr);
-
-#include <metal/system/@PROJECT_SYSTEM@/alloc.h>
+void metal_free_memory(void *ptr);
 
 /** @} */
 

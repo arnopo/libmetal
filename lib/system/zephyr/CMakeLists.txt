@@ -1,4 +1,3 @@
-collect (PROJECT_LIB_HEADERS alloc.h)
 collect (PROJECT_LIB_HEADERS assert.h)
 collect (PROJECT_LIB_HEADERS cache.h)
 collect (PROJECT_LIB_HEADERS condition.h)
