@@ -9,6 +9,193 @@
 #include <metal/io.h>
 #include <metal/sys.h>
 
+/**
+ * @brief	Close a libmetal shared memory segment.
+ * @param[in]	io	I/O region handle.
+ */
+void metal_io_finish(struct metal_io_region *io)
+{
+	if (io->ops.close)
+		(*io->ops.close)(io);
+	memset(io, 0, sizeof(*io));
+}
+
+/**
+ * @brief	Get size of I/O region.
+ *
+ * @param[in]	io	I/O region handle.
+ * @return	Size of I/O region.
+ */
+size_t metal_io_region_size(struct metal_io_region *io)
+{
+	return io->size;
+}
+
+/**
+ * @brief	Get virtual address for a given offset into the I/O region.
+ * @param[in]	io	I/O region handle.
+ * @param[in]	offset	Offset into shared memory segment.
+ * @return	NULL if offset is out of range, or pointer to offset.
+ */
+void *metal_io_virt(struct metal_io_region *io, unsigned long offset)
+{
+	return (io->virt != METAL_BAD_VA && offset < io->size
+		? (void *)((uintptr_t)io->virt + offset)
+		: NULL);
+}
+
+/**
+ * @brief	Convert a virtual address to offset within I/O region.
+ * @param[in]	io	I/O region handle.
+ * @param[in]	virt	Virtual address within segment.
+ * @return	METAL_BAD_OFFSET if out of range, or offset.
+ */
+unsigned long metal_io_virt_to_offset(struct metal_io_region *io, void *virt)
+{
+	size_t offset = (uintptr_t)virt - (uintptr_t)io->virt;
+
+	return (offset < io->size ? offset : METAL_BAD_OFFSET);
+}
+
+/**
+ * @brief	Get physical address for a given offset into the I/O region.
+ * @param[in]	io	I/O region handle.
+ * @param[in]	offset	Offset into shared memory segment.
+ * @return	METAL_BAD_PHYS if offset is out of range, or physical address
+ *		of offset.
+ */
+metal_phys_addr_t metal_io_phys(struct metal_io_region *io, unsigned long offset)
+{
+	if (!io->ops.offset_to_phys) {
+		unsigned long page = (io->page_shift >=
+				     sizeof(offset) * CHAR_BIT ?
+				     0 : offset >> io->page_shift);
+		return (io->physmap && offset < io->size
+			? io->physmap[page] + (offset & io->page_mask)
+			: METAL_BAD_PHYS);
+	}
+
+	return io->ops.offset_to_phys(io, offset);
+}
+
+/**
+ * @brief	Convert a physical address to offset within I/O region.
+ * @param[in]	io	I/O region handle.
+ * @param[in]	phys	Physical address within segment.
+ * @return	METAL_BAD_OFFSET if out of range, or offset.
+ */
+unsigned long
+metal_io_phys_to_offset(struct metal_io_region *io, metal_phys_addr_t phys)
+{
+	if (!io->ops.phys_to_offset) {
+		unsigned long offset =
+			(io->page_mask == (metal_phys_addr_t)(-1) ?
+			phys - io->physmap[0] :  phys & io->page_mask);
+		do {
+			if (metal_io_phys(io, offset) == phys)
+				return offset;
+			offset += io->page_mask + 1;
+		} while (offset < io->size);
+		return METAL_BAD_OFFSET;
+	}
+
+	return (*io->ops.phys_to_offset)(io, phys);
+}
+
+/**
+ * @brief	Convert a physical address to virtual address.
+ * @param[in]	io	Shared memory segment handle.
+ * @param[in]	phys	Physical address within segment.
+ * @return	NULL if out of range, or corresponding virtual address.
+ */
+void *metal_io_phys_to_virt(struct metal_io_region *io, metal_phys_addr_t phys)
+{
+	return metal_io_virt(io, metal_io_phys_to_offset(io, phys));
+}
+
+/**
+ * @brief	Convert a virtual address to physical address.
+ * @param[in]	io	Shared memory segment handle.
+ * @param[in]	virt	Virtual address within segment.
+ * @return	METAL_BAD_PHYS if out of range, or corresponding
+ *		physical address.
+ */
+metal_phys_addr_t metal_io_virt_to_phys(struct metal_io_region *io, void *virt)
+{
+	return metal_io_phys(io, metal_io_virt_to_offset(io, virt));
+}
+
+/**
+ * @brief	Read a value from an I/O region.
+ * @param[in]	io	I/O region handle.
+ * @param[in]	offset	Offset into I/O region.
+ * @param[in]	order	Memory ordering.
+ * @param[in]	width	Width in bytes of datatype to read.  This must be 1, 2,
+ *			4, or 8, and a compile time constant for this function
+ *			to inline cleanly.
+ * @return	Value.
+ */
+uint64_t metal_io_read(struct metal_io_region *io, unsigned long offset,
+		       memory_order order, int width)
+{
+	void *ptr = metal_io_virt(io, offset);
+
+	if (io->ops.read)
+		return (*io->ops.read)(io, offset, order, width);
+	else if (ptr && sizeof(atomic_uchar) == width)
+		return atomic_load_explicit((atomic_uchar *)ptr, order);
+	else if (ptr && sizeof(atomic_ushort) == width)
+		return atomic_load_explicit((atomic_ushort *)ptr, order);
+	else if (ptr && sizeof(atomic_uint) == width)
+		return atomic_load_explicit((atomic_uint *)ptr, order);
+	else if (ptr && sizeof(atomic_ulong) == width)
+		return atomic_load_explicit((atomic_ulong *)ptr, order);
+#ifndef NO_ATOMIC_64_SUPPORT
+	else if (ptr && sizeof(atomic_ullong) == width)
+		return atomic_load_explicit((atomic_ullong *)ptr, order);
+#endif
+	metal_assert(0);
+	return 0; /* quiet compiler */
+}
+
+/**
+ * @brief	Write a value into an I/O region.
+ * @param[in]	io	I/O region handle.
+ * @param[in]	offset	Offset into I/O region.
+ * @param[in]	value	Value to write.
+ * @param[in]	order	Memory ordering.
+ * @param[in]	width	Width in bytes of datatype to read.  This must be 1, 2,
+ *			4, or 8, and a compile time constant for this function
+ *			to inline cleanly.
+ */
+void metal_io_write(struct metal_io_region *io, unsigned long offset,
+		    uint64_t value, memory_order order, int width)
+{
+	void *ptr = metal_io_virt(io, offset);
+
+	if (io->ops.write)
+		(*io->ops.write)(io, offset, value, order, width);
+	else if (ptr && sizeof(atomic_uchar) == width)
+		atomic_store_explicit((atomic_uchar *)ptr, (unsigned char)value,
+				      order);
+	else if (ptr && sizeof(atomic_ushort) == width)
+		atomic_store_explicit((atomic_ushort *)ptr,
+				      (unsigned short)value, order);
+	else if (ptr && sizeof(atomic_uint) == width)
+		atomic_store_explicit((atomic_uint *)ptr, (unsigned int)value,
+				      order);
+	else if (ptr && sizeof(atomic_ulong) == width)
+		atomic_store_explicit((atomic_ulong *)ptr, (unsigned long)value,
+				      order);
+#ifndef NO_ATOMIC_64_SUPPORT
+	else if (ptr && sizeof(atomic_ullong) == width)
+		atomic_store_explicit((atomic_ullong *)ptr,
+				      (unsigned long long)value, order);
+#endif
+	else
+		metal_assert(0);
+}
+
 void metal_io_init(struct metal_io_region *io, void *virt,
 	      const metal_phys_addr_t *physmap, size_t size,
 	      unsigned int page_shift, unsigned int mem_flags,
