@@ -30,10 +30,7 @@ extern "C" {
  *                 If addr is NULL, and len is 0,
  *                 It will flush the whole data cache.
  */
-static inline void metal_cache_flush(void *addr, unsigned int len)
-{
-	__metal_cache_flush(addr, len);
-}
+void metal_cache_flush(void *addr, unsigned int len);
 
 /**
  * @brief invalidate specified data cache
@@ -43,10 +40,7 @@ static inline void metal_cache_flush(void *addr, unsigned int len)
  *                 If addr is NULL, and len is 0,
  *                 It will invalidate the whole data cache.
  */
-static inline void metal_cache_invalidate(void *addr, unsigned int len)
-{
-	__metal_cache_invalidate(addr, len);
-}
+void metal_cache_invalidate(void *addr, unsigned int len);
 
 /** @} */
 

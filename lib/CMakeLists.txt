@@ -30,6 +30,7 @@ collect (PROJECT_LIB_HEADERS time.h)
 collect (PROJECT_LIB_HEADERS utilities.h)
 collect (PROJECT_LIB_HEADERS version.h)
 
+collect (PROJECT_LIB_SOURCES cache.c)
 collect (PROJECT_LIB_SOURCES dma.c)
 collect (PROJECT_LIB_SOURCES device.c)
 collect (PROJECT_LIB_SOURCES init.c)
