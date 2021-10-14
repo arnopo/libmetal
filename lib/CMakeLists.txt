@@ -41,6 +41,7 @@ collect (PROJECT_LIB_SOURCES mutex.c)
 collect (PROJECT_LIB_SOURCES shmem.c)
 collect (PROJECT_LIB_SOURCES sleep.c)
 collect (PROJECT_LIB_SOURCES softirq.c)
+collect (PROJECT_LIB_SOURCES spinlock.c)
 collect (PROJECT_LIB_SOURCES version.c)
 
 add_subdirectory (compiler)
