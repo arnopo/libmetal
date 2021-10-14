@@ -12,6 +12,21 @@
 #include <metal/condition.h>
 #include <metal/irq.h>
 
+void metal_condition_init(struct metal_condition *cv)
+{
+	pthread_cond_init(&cv->cond, NULL);
+}
+
+int metal_condition_signal(struct metal_condition *cv)
+{
+	return -pthread_cond_signal(&cv->cond);
+}
+
+int metal_condition_broadcast(struct metal_condition *cv)
+{
+	return -pthread_cond_broadcast(&cv->cond);
+}
+
 int metal_condition_wait(struct metal_condition *cv,
 			 metal_mutex_t *m)
 {

@@ -11,6 +11,35 @@
 
 #include <metal/condition.h>
 
+inline void metal_condition_init(struct metal_condition *cv)
+{
+	atomic_init(&cv->mptr, 0);
+	atomic_init(&cv->waiters, 0);
+	atomic_init(&cv->wakeups, 0);
+}
+
+inline int metal_condition_signal(struct metal_condition *cv)
+{
+	if (!cv)
+		return -EINVAL;
+
+	atomic_fetch_add(&cv->wakeups, 1);
+	if (atomic_load(&cv->waiters) > 0)
+		syscall(SYS_futex, &cv->wakeups, FUTEX_WAKE, 1, NULL, NULL, 0);
+	return 0;
+}
+
+inline int metal_condition_broadcast(struct metal_condition *cv)
+{
+	if (!cv)
+		return -EINVAL;
+
+	atomic_fetch_add(&cv->wakeups, 1);
+	if (atomic_load(&cv->waiters) > 0)
+		syscall(SYS_futex, &cv->wakeups, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
+	return 0;
+}
+
 int metal_condition_wait(struct metal_condition *cv,
 				       metal_mutex_t *m)
 {

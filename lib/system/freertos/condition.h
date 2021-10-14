@@ -35,26 +35,6 @@ struct metal_condition {
 /** Static metal condition variable initialization. */
 #define METAL_CONDITION_INIT		{ NULL, ATOMIC_VAR_INIT(0) }
 
-static inline void metal_condition_init(struct metal_condition *cv)
-{
-	/* TODO: Implement condition variable for FreeRTOS */
-	(void)cv;
-}
-
-static inline int metal_condition_signal(struct metal_condition *cv)
-{
-	/* TODO: Implement condition variable for FreeRTOS */
-	(void)cv;
-	return 0;
-}
-
-static inline int metal_condition_broadcast(struct metal_condition *cv)
-{
-	/* TODO: Implement condition variable for FreeRTOS */
-	(void)cv;
-	return 0;
-}
-
 #ifdef __cplusplus
 }
 #endif

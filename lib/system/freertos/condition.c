@@ -11,6 +11,26 @@
 
 #include <metal/condition.h>
 
+void metal_condition_init(struct metal_condition *cv)
+{
+	/* TODO: Implement condition variable for FreeRTOS */
+	(void)cv;
+}
+
+int metal_condition_signal(struct metal_condition *cv)
+{
+	/* TODO: Implement condition variable for FreeRTOS */
+	(void)cv;
+	return 0;
+}
+
+int metal_condition_broadcast(struct metal_condition *cv)
+{
+	/* TODO: Implement condition variable for FreeRTOS */
+	(void)cv;
+	return 0;
+}
+
 int metal_condition_wait(struct metal_condition *cv,
 			 metal_mutex_t *m)
 {
@@ -19,3 +39,4 @@ int metal_condition_wait(struct metal_condition *cv,
 	(void)m;
 	return 0;
 }
+

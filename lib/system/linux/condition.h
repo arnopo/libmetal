@@ -43,33 +43,4 @@ struct metal_condition {
 #define METAL_CONDITION_INIT	{ ATOMIC_VAR_INIT(0), ATOMIC_VAR_INIT(0), \
 				  ATOMIC_VAR_INIT(0) }
 
-static inline void metal_condition_init(struct metal_condition *cv)
-{
-	atomic_init(&cv->mptr, 0);
-	atomic_init(&cv->waiters, 0);
-	atomic_init(&cv->wakeups, 0);
-}
-
-static inline int metal_condition_signal(struct metal_condition *cv)
-{
-	if (!cv)
-		return -EINVAL;
-
-	atomic_fetch_add(&cv->wakeups, 1);
-	if (atomic_load(&cv->waiters) > 0)
-		syscall(SYS_futex, &cv->wakeups, FUTEX_WAKE, 1, NULL, NULL, 0);
-	return 0;
-}
-
-static inline int metal_condition_broadcast(struct metal_condition *cv)
-{
-	if (!cv)
-		return -EINVAL;
-
-	atomic_fetch_add(&cv->wakeups, 1);
-	if (atomic_load(&cv->waiters) > 0)
-		syscall(SYS_futex, &cv->wakeups, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
-	return 0;
-}
-
 #endif /* __METAL_LINUX_CONDITION__H__ */

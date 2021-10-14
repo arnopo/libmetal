@@ -30,7 +30,7 @@ struct metal_condition;
  * @brief        Initialize a libmetal condition variable.
  * @param[in]	 cv	condition variable to initialize.
  */
-static inline void metal_condition_init(struct metal_condition *cv);
+void metal_condition_init(struct metal_condition *cv);
 
 /**
  * @brief        Notify one waiter.
@@ -40,7 +40,7 @@ static inline void metal_condition_init(struct metal_condition *cv);
  * @return       zero on no errors, non-zero on errors
  * @see metal_condition_wait, metal_condition_broadcast
  */
-static inline int metal_condition_signal(struct metal_condition *cv);
+int metal_condition_signal(struct metal_condition *cv);
 
 /**
  * @brief        Notify all waiters.
@@ -50,7 +50,7 @@ static inline int metal_condition_signal(struct metal_condition *cv);
  * @return       zero on no errors, non-zero on errors
  * @see metal_condition_wait, metal_condition_signal
  */
-static inline int metal_condition_broadcast(struct metal_condition *cv);
+int metal_condition_broadcast(struct metal_condition *cv);
 
 /**
  * @brief        Block until the condition variable is notified.

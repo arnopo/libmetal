@@ -29,20 +29,6 @@ struct metal_condition {
 /** Static metal condition variable initialization. */
 #define METAL_CONDITION_INIT		{PTHREAD_COND_INITIALIZER}
 
-static inline void metal_condition_init(struct metal_condition *cv)
-{
-	pthread_cond_init(&cv->cond, NULL);
-}
-
-static inline int metal_condition_signal(struct metal_condition *cv)
-{
-	return -pthread_cond_signal(&cv->cond);
-}
-
-static inline int metal_condition_broadcast(struct metal_condition *cv)
-{
-	return -pthread_cond_broadcast(&cv->cond);
-}
 
 #ifdef __cplusplus
 }
