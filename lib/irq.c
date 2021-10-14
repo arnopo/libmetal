@@ -138,3 +138,8 @@ void metal_irq_disable(unsigned int vector)
 {
 	_metal_irq_set_enable((int)vector, METAL_IRQ_DISABLE);
 }
+
+void metal_irq_unregister(int irq)
+{
+	metal_irq_register(irq, 0, NULL);
+}

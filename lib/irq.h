@@ -57,11 +57,7 @@ int metal_irq_register(int irq,
  *
  * @param[in]  irq         interrupt id
  */
-static inline
-void metal_irq_unregister(int irq)
-{
-	metal_irq_register(irq, 0, NULL);
-}
+void metal_irq_unregister(int irq);
 
 /**
  * @brief      disable interrupts
