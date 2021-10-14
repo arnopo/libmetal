@@ -12,11 +12,13 @@
 #ifndef __METAL_ASSERT__H__
 #define __METAL_ASSERT__H__
 
+#include <metal/system/@PROJECT_SYSTEM@/assert.h>
+
 /**
  * @brief Assertion macro.
  * @param cond Condition to test.
  */
-void metal_assert(int cond);
+#define metal_assert(cond) metal_sys_assert(cond)
 
 #endif /* __METAL_ASSERT_H__ */
 

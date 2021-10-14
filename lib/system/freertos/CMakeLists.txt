@@ -1,3 +1,4 @@
+collect (PROJECT_LIB_HEADERS assert.h)
 collect (PROJECT_LIB_HEADERS cache.h)
 collect (PROJECT_LIB_HEADERS condition.h)
 collect (PROJECT_LIB_HEADERS io.h)
@@ -8,7 +9,6 @@ collect (PROJECT_LIB_HEADERS sleep.h)
 collect (PROJECT_LIB_HEADERS sys.h)
 
 collect (PROJECT_LIB_SOURCES alloc.c)
-collect (PROJECT_LIB_SOURCES assert.c)
 collect (PROJECT_LIB_SOURCES condition.c)
 collect (PROJECT_LIB_SOURCES device.c)
 collect (PROJECT_LIB_SOURCES init.c)
