@@ -38,6 +38,7 @@ collect (PROJECT_LIB_SOURCES io.c)
 collect (PROJECT_LIB_SOURCES irq.c)
 collect (PROJECT_LIB_SOURCES log.c)
 collect (PROJECT_LIB_SOURCES shmem.c)
+collect (PROJECT_LIB_SOURCES sleep.c)
 collect (PROJECT_LIB_SOURCES softirq.c)
 collect (PROJECT_LIB_SOURCES version.c)
 

@@ -30,10 +30,7 @@ extern "C" {
  * @param[in]  usec      microsecond intervals
  * @return     0 on success, non-zero for failures
  */
-static inline int metal_sleep_usec(unsigned int usec)
-{
-	return __metal_sleep_usec(usec);
-}
+int metal_sleep_usec(unsigned int usec);
 
 /** @} */
 
