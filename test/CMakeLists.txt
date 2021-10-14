@@ -68,9 +68,9 @@ else (WITH_ZEPHYR)
   foreach (INCLUDE ${_headers})
     string (REGEX REPLACE "[^a-zA-Z0-9]+" "-" _f ${INCLUDE})
     configure_file (metal-header-template.c ${_f}.c)
-    list (APPEND _flist "${CMAKE_CURRENT_BINARY_DIR}/${_f}")
+    list (APPEND _flist "${CMAKE_CURRENT_BINARY_DIR}/${_f}.c")
   endforeach (INCLUDE)
-  add_library (metal-headers STATIC ${_flist})
+add_library (metal-headers STATIC ${_flist})
 endif (WITH_ZEPHYR)
 
 # vim: expandtab:ts=2:sw=2:smartindent
