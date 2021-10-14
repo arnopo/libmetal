@@ -15,6 +15,13 @@
 #include <metal/dma.h>
 #include <metal/cache.h>
 
+struct metal_io_region *metal_device_io_region(struct metal_device *device, unsigned int index)
+{
+	return (index < device->num_regions
+		? &device->regions[index]
+		: NULL);
+}
+
 int metal_bus_register(struct metal_bus *bus)
 {
 	if (!bus || !bus->name || !strlen(bus->name))

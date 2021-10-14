@@ -143,13 +143,7 @@ extern void metal_device_close(struct metal_device *device);
  * @param[in]	index		Region index.
  * @return I/O accessor handle, or NULL on failure.
  */
-static inline struct metal_io_region *
-metal_device_io_region(struct metal_device *device, unsigned int index)
-{
-	return (index < device->num_regions
-		? &device->regions[index]
-		: NULL);
-}
+struct metal_io_region *metal_device_io_region(struct metal_device *device, unsigned int index);
 
 /** @} */
 
