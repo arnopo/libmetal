@@ -77,75 +77,25 @@ extern "C" {
 
 #define metal_bitmap_longs(x)	metal_div_round_up((x), METAL_BITS_PER_ULONG)
 
-static inline void metal_bitmap_set_bit(unsigned long *bitmap, int bit)
-{
-	bitmap[bit / METAL_BITS_PER_ULONG] |=
-		metal_bit(bit & (METAL_BITS_PER_ULONG - 1));
-}
+#define metal_bitmap_for_each_set_bit(bitmap, bit, max)     \
+  for ((bit) = metal_bitmap_next_set_bit((bitmap), 0, (max)); \
+       (bit) < (max);           \
+       (bit) = metal_bitmap_next_set_bit((bitmap), (bit + 1), (max)))
 
-static inline int metal_bitmap_is_bit_set(unsigned long *bitmap, int bit)
-{
-	return ((bitmap[bit / METAL_BITS_PER_ULONG] &
-		metal_bit(bit & (METAL_BITS_PER_ULONG - 1))) == 0) ? 0 : 1;
-}
+#define metal_bitmap_for_each_clear_bit(bitmap, bit, max)   \
+  for ((bit) = metal_bitmap_next_clear_bit((bitmap), 0, (max)); \
+       (bit) < (max);           \
+       (bit) = metal_bitmap_next_clear_bit((bitmap), (bit + 1), (max)))
 
-static inline void metal_bitmap_clear_bit(unsigned long *bitmap, int bit)
-{
-	bitmap[bit / METAL_BITS_PER_ULONG] &=
-		~metal_bit(bit & (METAL_BITS_PER_ULONG - 1));
-}
-
-static inline int metal_bitmap_is_bit_clear(unsigned long *bitmap, int bit)
-{
-	return !metal_bitmap_is_bit_set(bitmap, bit);
-}
-
-static inline unsigned int
-metal_bitmap_next_set_bit(unsigned long *bitmap, unsigned int start,
-			  unsigned int max)
-{
-	unsigned int bit;
-
-	for (bit = start;
-	     bit < max && !metal_bitmap_is_bit_set(bitmap, bit);
-	     bit++)
-		;
-	return bit;
-}
-
-#define metal_bitmap_for_each_set_bit(bitmap, bit, max)			\
-	for ((bit) = metal_bitmap_next_set_bit((bitmap), 0, (max));	\
-	     (bit) < (max);						\
-	     (bit) = metal_bitmap_next_set_bit((bitmap), (bit + 1), (max)))
-
-static inline unsigned int
-metal_bitmap_next_clear_bit(unsigned long *bitmap, unsigned int start,
-			    unsigned int max)
-{
-	unsigned int bit;
-
-	for (bit = start;
-	     bit < max && !metal_bitmap_is_bit_clear(bitmap, bit);
-	     bit++)
-		;
-	return bit;
-}
-
-#define metal_bitmap_for_each_clear_bit(bitmap, bit, max)		\
-	for ((bit) = metal_bitmap_next_clear_bit((bitmap), 0, (max));	\
-	     (bit) < (max);						\
-	     (bit) = metal_bitmap_next_clear_bit((bitmap), (bit + 1), (max)))
-
-static inline unsigned long metal_log2(unsigned long in)
-{
-	unsigned long result;
-
-	metal_assert((in & (in - 1)) == 0);
-
-	for (result = 0; (1UL << result) < in; result++)
-		;
-	return result;
-}
+void metal_bitmap_set_bit(unsigned long *bitmap, int bit);
+int metal_bitmap_is_bit_set(unsigned long *bitmap, int bit);
+void metal_bitmap_clear_bit(unsigned long *bitmap, int bit);
+int metal_bitmap_is_bit_clear(unsigned long *bitmap, int bit);
+unsigned int
+metal_bitmap_next_set_bit(unsigned long *bitmap, unsigned int start, unsigned int max);
+unsigned int
+metal_bitmap_next_clear_bit(unsigned long *bitmap, unsigned int start, unsigned int max);
+unsigned long metal_log2(unsigned long in);
 
 /** @} */
 
