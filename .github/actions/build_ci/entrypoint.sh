@@ -74,8 +74,17 @@ build_zephyr(){
     	cd ./zephyr &&
     	source zephyr-env.sh &&
 	cd ../.. &&
-	cmake . -DWITH_ZEPHYR=on -DBOARD=qemu_cortex_m3 -DWITH_TESTS=on -Bbuild-zephyr &&
-	cd build-zephyr &&
+	echo  " Build for Qemu cortex m3 " &&
+	cmake . -DWITH_ZEPHYR=on -DBOARD=qemu_cortex_m3 -DWITH_TESTS=on -Bbuild-zephyr-m3 &&
+	cd build-zephyr-m3 &&
+	make VERBOSE=1 &&
+	echo  " Build for Qemu riscv64 " &&
+	cmake . -DWITH_ZEPHYR=on -DBOARD=qemu_riscv64 -DWITH_TESTS=on -Bbuild-zephyr-rscv64 &&
+	cd build-zephyr-rscv64 &&
+	make VERBOSE=1 &&
+	echo  " Build for Qemu riscv32 " &&
+	cmake . -DWITH_ZEPHYR=on -DBOARD=qemu_riscv32 -DWITH_TESTS=on -Bbuild-zephyr-rscv32 &&
+	cd build-zephyr-rscv32 &&
 	make VERBOSE=1 &&
 	exit 0
 }
