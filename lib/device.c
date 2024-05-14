@@ -17,8 +17,10 @@
 
 int metal_bus_register(struct metal_bus *bus)
 {
+	metal_log(METAL_LOG_DEBUG, "%s %d\n", __func__, __LINE__);
 	if (!bus || !bus->name || !strlen(bus->name))
 		return -EINVAL;
+	metal_log(METAL_LOG_DEBUG, "%s %d\n", __func__, __LINE__);
 	if (metal_bus_find(bus->name, NULL) == 0)
 		return -EEXIST;
 	metal_list_init(&bus->devices);

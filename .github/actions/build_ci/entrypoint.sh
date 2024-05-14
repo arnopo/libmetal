@@ -27,21 +27,25 @@ pre_build(){
 
 build_linux(){
 	echo  " Build for linux"
-	apt-get install -y libsysfs-dev libhugetlbfs-dev gcc &&
-	mkdir -p build-linux &&
-	cd build-linux &&
-	cmake .. -DWITH_TESTS_EXEC=on &&
-	make VERBOSE=1 all test &&
+	sudo apt-get install -y libsysfs-dev linux-generic || exit 1
+	cmake . -Bbuild-linux || exit 1
+	cd build-linux
+	make VERBOSE=1 all || exit 1
+	echo  " -----find test----"
+	find -name test-metal-shared
+	echo  " ----run test for linux----"
+	modprobe uio_pdrv_genirq
+	make test ARGS="-VV" || cat Testing/Temporary/LastTest.log  && exit 1
 	exit 0
 }
 
 build_generic(){
 	echo  " Build for generic platform "
-	apt-get install -y gcc-arm-none-eabi &&
+	apt-get install -y gcc-arm-none-eabi libsysfs-dev &&
 	mkdir -p build-generic &&
 	cd build-generic &&
 	cmake .. -DCMAKE_TOOLCHAIN_FILE=template-generic || exit 1
-	make VERBOSE=1 || exit 1
+	make VERBOSE=1 && exit 1
 	exit 0
 }
 

@@ -556,39 +556,50 @@ static int metal_linux_probe_driver(struct linux_bus *lbus,
 	char command[256];
 	int ret;
 
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, lbus->bus_name);
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 	ldrv->sdrv = sysfs_open_driver(lbus->bus_name, ldrv->drv_name);
 
 	/* Try probing the module and then open the driver. */
 	if (!ldrv->sdrv) {
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 		ret = snprintf(command, sizeof(command),
 			       "modprobe %s > /dev/null 2>&1", ldrv->mod_name);
 		if (ret >= (int)sizeof(command))
 			return -EOVERFLOW;
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 		ret = system(command);
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 		if (ret < 0) {
 			metal_log(METAL_LOG_WARNING,
 				  "%s: executing system command '%s' failed.\n",
 				  __func__, command);
 		}
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 		ldrv->sdrv = sysfs_open_driver(lbus->bus_name, ldrv->drv_name);
 	}
 
 	/* Try sudo probing the module and then open the driver. */
 	if (!ldrv->sdrv) {
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 		ret = snprintf(command, sizeof(command),
 			       "sudo modprobe %s > /dev/null 2>&1", ldrv->mod_name);
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 		if (ret >= (int)sizeof(command))
 			return -EOVERFLOW;
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 		ret = system(command);
 		if (ret < 0) {
 			metal_log(METAL_LOG_WARNING,
 				  "%s: executing system command '%s' failed.\n",
 				  __func__, command);
 		}
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 		ldrv->sdrv = sysfs_open_driver(lbus->bus_name, ldrv->drv_name);
 	}
 
 	/* If all else fails... */
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, ldrv->drv_name);
 	return ldrv->sdrv ? 0 : -ENODEV;
 }
 
@@ -599,26 +610,34 @@ static int metal_linux_probe_bus(struct linux_bus *lbus)
 	struct linux_driver *ldrv;
 	int ret, error = -ENODEV;
 
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, lbus->bus_name);
+
 	lbus->sbus = sysfs_open_bus(lbus->bus_name);
 	if (!lbus->sbus)
 		return -ENODEV;
 
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, lbus->bus_name);
 	for_each_linux_driver(lbus, ldrv) {
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, lbus->bus_name);
 		ret = metal_linux_probe_driver(lbus, ldrv);
 		/* Clear the error if any driver is available */
 		if (!ret)
 			error = ret;
+	metal_log(METAL_LOG_DEBUG, "%s %d %s  %d\n", __func__, __LINE__, lbus->bus_name, error);
 	}
 
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, lbus->bus_name);
 	if (error) {
 		metal_linux_bus_close(&lbus->bus);
 		return error;
 	}
 
+	metal_log(METAL_LOG_DEBUG, "%s %d %s \n", __func__, __LINE__, lbus->bus_name);
 	error = metal_linux_register_bus(lbus);
 	if (error)
 		metal_linux_bus_close(&lbus->bus);
 
+	metal_log(METAL_LOG_DEBUG, "%s %d %d \n", __func__, __LINE__, error);
 	return error;
 }
 
