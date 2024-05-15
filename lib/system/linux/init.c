@@ -143,13 +143,18 @@ int metal_sys_init(const struct metal_init_params *params)
 	fclose(urandom);
 	srand(seed);
 
+	metal_log(METAL_LOG_DEBUG, "%s %d\n", __func__, __LINE__);
 	result = metal_init_page_sizes();
 	if (result < 0)
 		return result;
+	metal_log(METAL_LOG_DEBUG, "%s %d\n", __func__, __LINE__);
 
 	result = metal_linux_bus_init();
-	if (result < 0)
+	if (result < 0) {
+		metal_log(METAL_LOG_DEBUG, "%s %d\n", __func__, result);
 		return result;
+	}
+	metal_log(METAL_LOG_DEBUG, "%s %d\n", __func__, __LINE__);
 
 	result = open("/proc/self/pagemap", O_RDONLY | O_CLOEXEC);
 	if (result < 0) {
