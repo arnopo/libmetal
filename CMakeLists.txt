@@ -1,17 +1,8 @@
 cmake_minimum_required (VERSION 3.0.2)
-
-#added in cmake v3.0
 if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif()
 
-
-#added in cmake v3.1
-if (POLICY CMP0053)
-  cmake_policy(SET CMP0053 NEW)
-endif()
-
-#added in cmake v3.13
 if (POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
