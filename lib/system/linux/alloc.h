@@ -6,7 +6,7 @@
 
 /*
  * @file	linux/alloc.h
- * @brief	linux memory allocattion definitions.
+ * @brief	linux memory allocation definitions.
  */
 
 #ifndef __METAL_ALLOC__H__

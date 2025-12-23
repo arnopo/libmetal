@@ -6,7 +6,7 @@
 
 /*
  * @file	freertos/alloc.c
- * @brief	FreeRTOS libmetal memory allocattion definitions.
+ * @brief	FreeRTOS libmetal memory allocation definitions.
  */
 
 #ifndef __METAL_ALLOC__H__

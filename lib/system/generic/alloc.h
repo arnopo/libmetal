@@ -6,7 +6,7 @@
 
 /*
  * @file	generic/alloc.c
- * @brief	generic libmetal memory allocattion definitions.
+ * @brief	generic libmetal memory allocation definitions.
  */
 
 #ifndef __METAL_ALLOC__H__

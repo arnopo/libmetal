@@ -6,7 +6,7 @@
 
 /*
  * @file	zephyr/alloc.h
- * @brief	zephyr libmetal memory allocattion definitions.
+ * @brief	zephyr libmetal memory allocation definitions.
  */
 
 #ifndef __METAL_ALLOC__H__

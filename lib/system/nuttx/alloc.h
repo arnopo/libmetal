@@ -6,7 +6,7 @@
 
 /*
  * @file	nuttx/alloc.h
- * @brief	nuttx libmetal memory allocattion definitions.
+ * @brief	nuttx libmetal memory allocation definitions.
  */
 
 #ifndef __METAL_ALLOC__H__
