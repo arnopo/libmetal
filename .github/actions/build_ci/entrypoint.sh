@@ -69,7 +69,7 @@ build_zephyr(){
 	sudo apt-get install -y libc6-dev-i386 gperf g++ python3-ply python3-yaml \
 		device-tree-compiler ncurses-dev uglifyjs -qq || exit 1
 	pip3 install pyelftools || exit 1
-	pip3 install west || exit 1
+	pip3 install west jsonschema || exit 1
 
 	west init --mr $ZEPHYR_VERSION ./zephyrproject || exit 1
 	cd ./zephyrproject || exit 1
