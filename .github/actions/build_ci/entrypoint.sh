@@ -74,8 +74,8 @@ build_zephyr(){
 	west init --mr $ZEPHYR_VERSION ./zephyrproject || exit 1
 	cd ./zephyrproject || exit 1
 	west update --narrow || exit 1
-	west zephyr-export || exit 1
 	west packages pip --install || exit 1
+	west zephyr-export || exit 1
 
 	echo  "Zephyr sdk install"
 	cd ./zephyr &&
